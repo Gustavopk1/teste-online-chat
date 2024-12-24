@@ -2,7 +2,15 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO
 import random
 from string import ascii_uppercase
+from flask import Flask
+app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return 'Hello, Vercel!'
+
+if __name__ == '__main__':
+    app.run()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hjhjsdahhds"
