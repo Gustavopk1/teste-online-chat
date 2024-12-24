@@ -12,5 +12,29 @@ Siga as etapas abaixo para clonar o repositório:
 
 4- Rode o projeto: python main.py
 
+*Para hospedar no versel*
+
+5- Crie o arquivo requirements.txt dentro da raiz do projeto: pip freeze > requirements.txt
+
+6- Crie na raiz do projeto o arquivo (vercel.json) e cole a seguinte informação:
+
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ]
+}
+
+7- suba todas as informações para seu repositório no github
+
 *Email:* samuelvitoopo@gmail.com
 *GitHub:* vitorreplit
