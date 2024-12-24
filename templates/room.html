@@ -1,51 +1,51 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block content %}
 <div class="message-box">
-  <h2>Sala: {{code}}</h2>
+  <h2>Sala: {{ code }}</h2>
 
   <div class="messages" id="messages"></div>
 
   <div class="inputs">
     <input type="text" rows="3" placeholder="Message" name="message" id="message" />
-    <button type="button" name="send" id="send-btn" onClick="sendMessage()">
-      Enviar
-    </button>
+    <button type="button" name="send" id="send-btn" onClick="sendMessage()">Enviar</button>
   </div>
-
 </div>
 
 <script type="text/javascript">
-  var socketio = io();
+  var socketio = io();  // Conectar-se ao servidor
 
   const messages = document.getElementById("messages");
 
+  // Função para criar e adicionar mensagens ao chat
   const createMessage = (name, msg) => {
     const content = `
     <div class="text">
-        <span>
-            <strong>${name}</strong>: ${msg}
-        </span>
-        <span class="muted">
-            ${new Date().toLocaleString()}
-        </span>
+        <span><strong>${name}</strong>: ${msg}</span>
+        <span class="muted">${new Date().toLocaleString()}</span>
     </div>
     `;
-    messages.innerHTML += content;
+    messages.innerHTML += content;  // Adiciona a nova mensagem
+    messages.scrollTop = messages.scrollHeight;  // Rola para a última mensagem
   };
 
+  // Receber mensagens do servidor via Socket.IO
   socketio.on("message", (data) => {
     createMessage(data.name, data.message);
   });
 
+  // Enviar mensagem para o servidor
   const sendMessage = () => {
     const message = document.getElementById("message");
-    if (message.value == "") return;
-    socketio.emit("message", { data: message.value });
-    message.value = "";
+    if (message.value === "") return;  // Não enviar mensagem vazia
+    socketio.emit("message", { data: message.value });  // Enviar via Socket.IO
+    message.value = "";  // Limpar campo de entrada
   };
-</script>
-{% for msg in messages %}
 
-<script type="text/javascript">
-  createMessage("{{msg.name}}", "{{msg.message}}");
+  // Exibir mensagens iniciais (enviadas ao entrar na sala)
+  {% for msg in messages %}
+    createMessage("{{ msg.name | escapejs }}", "{{ msg.message | escapejs }}");
+  {% endfor %}
 </script>
-{% endfor %} {% endblock %}
+
+{% endblock %}

@@ -1,25 +1,55 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Formulário de entrada na sala -->
 <form method="post" class="buttons">
   <h3>Entre na sala de bate-papo</h3>
 
   <div>
     <label>Nome:</label>
-    <input type="text" placeholder="Informe seu nome" name="name" value="{{name}}" style="width: 177px;" />
+    <input type="text" placeholder="Informe seu nome" name="name" value="{{ name }}" style="width: 177px;" required />
   </div>
 
   <div class="join" style="padding-bottom: 10px; padding-top: 5px;">
     <label>Código:</label>
-    <input type="text" placeholder="Informe o código" name="code" value="{{code}}" />
+    <input type="text" placeholder="Informe o código" name="code" value="{{ code }}" />
     <button type="submit" name="join">Junte-se a uma sala</button>
   </div>
 
   <button type="submit" name="create" class="create-btn">Crie uma sala</button>
-  {% if error %}
 
-  <ul>
-    <li>{{error}}</li>
-  </ul>
+  {% if error %}
+    <ul>
+      <li>{{ error }}</li>
+    </ul>
   {% endif %}
-  
 </form>
+
+<!-- Script para manipular o WebSocket e interagir com o chat -->
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script type="text/javascript">
+  // Conectar ao servidor Socket.IO
+  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+  // Enviar uma mensagem para o servidor
+  function sendMessage() {
+    var messageInput = document.getElementById('messageInput');
+    var message = messageInput.value;
+    socket.emit('message', { data: message });
+    messageInput.value = ''; // Limpar o campo de entrada
+  }
+
+  socket.on('connect', function() {
+    console.log('Conectado ao servidor');
+  });
+
+  // Ouvir as mensagens e exibi-las
+  socket.on('message', function(data) {
+    var messagesContainer = document.getElementById('messages');
+    var newMessage = document.createElement('div');
+    newMessage.innerHTML = "<strong>" + data.name + ":</strong> " + data.message;
+    messagesContainer.appendChild(newMessage);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;  // Rolar para a última mensagem
+  });
+</script>
 {% endblock %}
