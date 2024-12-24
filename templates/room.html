@@ -41,11 +41,6 @@
     socketio.emit("message", { data: message.value });  // Enviar via Socket.IO
     message.value = "";  // Limpar campo de entrada
   };
-
-  // Exibir mensagens iniciais (enviadas ao entrar na sala)
-  {% for msg in messages %}
-    createMessage("{{ msg.name | escapejs }}", "{{ msg.message | escapejs }}");
-  {% endfor %}
 </script>
 
 {% endblock %}
